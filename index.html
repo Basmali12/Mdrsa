@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق مدرستي الذكية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* --- المتغيرات والتصميم العام --- */
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #ec4899;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* خط بسيط وواضح */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden; /* لمنع السكرول للصفحة كاملة، السكرول يكون داخل المحتوى */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- الهيكل الرئيسي --- */
+        .app-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            max-width: 600px; /* لتقييد العرض على شاشات الكمبيوتر الكبيرة */
+            width: 100%;
+            margin: 0 auto;
+            background: var(--surface);
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        /* --- الشاشات (Views) --- */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            padding-bottom: 80px; /* مساحة للبار السفلي */
+            overflow-y: auto;
+            display: none; /* مخفي افتراضياً */
+            background: var(--surface);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* --- العناوين --- */
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* --- الحقول والأزرار --- */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: #fff;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-add {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(236, 72, 153, 0.4);
+        }
+
+        .counselor-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* --- البطاقات (للصفوف والشعب) --- */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:active {
+            transform: scale(0.95);
+            background-color: #f0fdf4;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        /* --- جدول الطلاب --- */
+        .student-card {
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .student-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .grades-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grade-input label {
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+        
+        .grade-input input {
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* --- البار السفلي --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 600px;
+            height: 70px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            z-index: 100;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 10px;
+            transition: color 0.3s;
+        }
+
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="screen-setup" class="screen active">
+            <h2><i class="fas fa-school"></i> إعداد المدرسة</h2>
+            <div class="form-group">
+                <label>اسم المدرسة</label>
+                <input type="text" id="schoolName" placeholder="مثال: ثانوية النور للبنين">
+            </div>
+            
+            <div class="form-group">
+                <label>العام الدراسي</label>
+                <input type="text" id="academicYear" placeholder="2023 - 2024">
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label style="margin:0">المرشدين التربويين</label>
+                    <button class="btn-add" onclick="addCounselorField()">+</button>
+                </div>
+                <div id="counselors-container">
+                    <div class="counselor-row">
+                        <input type="text" placeholder="اسم المرشد">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="saveSetup()">حفظ ومتابعة</button>
+        </div>
+
+        <div id="screen-grades" class="screen">
+            <h2>الصفوف الدراسية</h2>
+            <div class="grid-cards" id="grades-list">
+                </div>
+        </div>
+
+        <div id="screen-sections" class="screen">
+            <div class="header-nav">
+                <button class="back-btn" onclick="navigateTo('screen-grades')"><i class="fas fa-arrow-right"></i></button>
+                <h2 style="margin:0; margin-right:10px;" id="selected-grade-title">الشعب</h2>
+            </div>
+            <div class="grid-cards" id="sections-list">
+                </div>
+        </div>
+
+        <div id="screen-students" class="screen">
+            <div class="header-nav">
+                <button class="back-btn" onclick="navigateTo('screen-sections')"><i class="fas fa-arrow-right"></i></button>
+                <h2 style="margin:0; margin-right:10px;">سجل الطلاب</h2>
+            </div>
+
+            <div class="form-group" style="background: #e0e7ff; padding: 10px; border-radius: 12px;">
+                <label style="color: var(--primary-dark);">اختر المادة لرصد الدرجات:</label>
+                <select id="subject-select" onchange="updateGradesView()">
+                    <option value="arabic">اللغة العربية</option>
+                    <option value="english">اللغة الإنجليزية</option>
+                    <option value="math">الرياضيات</option>
+                    <option value="science">العلوم</option>
+                    <option value="islamic">التربية الإسلامية</option>
+                </select>
+            </div>
+
+            <div id="students-list">
+                </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="navigateTo('screen-grades')">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('screen-setup')">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>البروفايل</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- البيانات الوهمية (محاكاة قاعدة البيانات) ---
+        const appData = {
+            schoolName: "",
+            year: "",
+            counselors: [],
+            grades: [
+                { id: 1, name: "الأول متوسط" },
+                { id: 2, name: "الثاني متوسط" },
+                { id: 3, name: "الثالث متوسط" },
+                { id: 4, name: "الرابع إعدادي" },
+                { id: 5, name: "الخامس إعدادي" },
+                { id: 6, name: "السادس إعدادي" }
+            ],
+            sections: ["أ", "ب", "ت", "ث", "ج", "ح"],
+            // محاكاة طلاب لشعبة معينة
+            students: [
+                { id: 101, name: "أحمد محمد علي" },
+                { id: 102, name: "سالم كريم حسن" },
+                { id: 103, name: "يوسف نبيل خليل" },
+                { id: 104, name: "حيدر عبد الأمير" },
+                { id: 105, name: "مصطفى سعدون" }
+            ]
+        };
+
+        // متغيرات لتخزين الاختيارات الحالية
+        let currentGradeId = null;
+        let currentSectionId = null;
+
+        // --- وظائف الإعدادات ---
+        function addCounselorField() {
+            const container = document.getElementById('counselors-container');
+            const div = document.createElement('div');
+            div.className = 'counselor-row';
+            div.innerHTML = `<input type="text" placeholder="اسم المرشد">`;
+            
+            // GSAP Animation للإضافة
+            container.appendChild(div);
+            gsap.from(div, { height: 0, opacity: 0, duration: 0.3 });
+        }
+
+        function saveSetup() {
+            const name = document.getElementById('schoolName').value;
+            const year = document.getElementById('academicYear').value;
+            
+            if(!name || !year) {
+                alert("يرجى ملء كافة الحقول");
+                return;
+            }
+
+            appData.schoolName = name;
+            appData.year = year;
+            
+            // الانتقال للشاشة التالية
+            initGrades();
+            navigateTo('screen-grades');
+        }
+
+        // --- التنقل بين الشاشات مع GSAP ---
+        function navigateTo(screenId) {
+            // إخفاء كل الشاشات
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            
+            // إظهار الشاشة المطلوبة
+            const targetScreen = document.getElementById(screenId);
+            targetScreen.classList.add('active');
+
+            // أنيميشن الدخول (Slide Up + Fade)
+            gsap.fromTo(targetScreen, 
+                { opacity: 0, y: 20 }, 
+                { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
+            );
+
+            // تحديث البار السفلي
+            updateBottomNav(screenId);
+        }
+
+        function updateBottomNav(screenId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if(screenId === 'screen-grades') {
+                document.querySelector('.nav-item:first-child').classList.add('active');
+            } else if (screenId === 'screen-setup') {
+                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+            }
+        }
+
+        // --- تهيئة الصفوف ---
+        function initGrades() {
+            const container = document.getElementById('grades-list');
+            container.innerHTML = '';
+            
+            appData.grades.forEach((grade, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>${grade.name}</h3>
+                `;
+                card.onclick = () => openSections(grade);
+                container.appendChild(card);
+            });
+
+            // GSAP Stagger Animation (تتابع البطاقات)
+            gsap.from(".grid-cards .card", {
+                duration: 0.5,
+                opacity: 0,
+                y: 50,
+                stagger: 0.1,
+                ease: "back.out(1.7)"
+            });
+        }
+
+        // --- فتح الشعب ---
+        function openSections(grade) {
+            currentGradeId = grade.id;
+            document.getElementById('selected-grade-title').innerText = "شعب " + grade.name;
+            
+            const container = document.getElementById('sections-list');
+            container.innerHTML = '';
+
+            appData.sections.forEach(sec => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <i class="fas fa-users"></i>
+                    <h3>شعبة ${sec}</h3>
+                `;
+                card.onclick = () => openStudents(sec);
+                container.appendChild(card);
+            });
+
+            navigateTo('screen-sections');
+
+            // إعادة تشغيل الأنيميشن للشعب
+            gsap.from("#sections-list .card", {
+                duration: 0.4,
+                opacity: 0,
+                scale: 0.8,
+                stagger: 0.05,
+                ease: "power1.out",
+                delay: 0.1
+            });
+        }
+
+        // --- فتح الطلاب ---
+        function openStudents(section) {
+            currentSectionId = section;
+            const container = document.getElementById('students-list');
+            container.innerHTML = '';
+
+            appData.students.forEach(student => {
+                const card = createStudentCard(student);
+                container.appendChild(card);
+            });
+
+            navigateTo('screen-students');
+
+            // أنيميشن قلب الحقول (3D Flip effect simulation using opacity/y)
+            gsap.from(".student-card", {
+                duration: 0.6,
+                opacity: 0,
+                rotationX: -15, // تأثير القلب البسيط
+                y: 30,
+                stagger: 0.1,
+                ease: "power3.out",
+                transformOrigin: "top"
+            });
+        }
+
+        function createStudentCard(student) {
+            const div = document.createElement('div');
+            div.className = 'student-card';
+            div.innerHTML = `
+                <div class="student-header">
+                    <span class="student-name"><i class="fas fa-user-graduate" style="margin-left:8px; color:#6b7280;"></i> ${student.name}</span>
+                    <i class="fas fa-ellipsis-v" style="color:#aaa;"></i>
+                </div>
+                <div class="grades-grid">
+                    <div class="grade-input">
+                        <label>شهري</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                    <div class="grade-input">
+                        <label>يومي</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                    <div class="grade-input">
+                        <label>سلوك</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        // --- تحديث عرض الدرجات عند تغيير المادة ---
+        function updateGradesView() {
+            // هنا فقط أنيميشن بسيط ليوحي بأن البيانات تغيرت
+            const cards = document.querySelectorAll('.student-card');
+            gsap.to(cards, {
+                opacity: 0.5,
+                duration: 0.2,
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => {
+                    gsap.set(cards, {opacity: 1});
+                    // هنا يمكن وضع كود لجلب درجات المادة المختارة من قاعدة البيانات
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
