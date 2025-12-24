@@ -186,6 +186,20 @@
             margin-top: 5px;
             border: 1px dashed #fcd34d;
         }
+        
+        /* تنسيق رسالة التحذير - تظهر دائماً */
+        #absenceAlertBox {
+            display: block; /* يظهر دائما */
+            background-color: #fef2f2;
+            color: #ef4444;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #ef4444;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; display: none; justify-content: space-around; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 100; }
         .nav-item { font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: 0.3s; }
@@ -284,8 +298,13 @@
                 </div>
                 
                 <h3 style="text-align:right; font-size:1.1rem; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px;">سجل الدرجات والملاحظات</h3>
-                <div id="previewGradesList">
-                    </div>
+                <div id="previewGradesList"></div>
+
+                <div id="absenceAlertBox">
+                    <i class="fas fa-exclamation-triangle"></i><br>
+                    الحد المسموح للغيابات ٢٥ الرجاء الالتزام بالدوام تجنبا للفصل
+                </div>
+
             </div>
             <div style="height:60px;"></div>
         </div>
@@ -547,7 +566,6 @@
             });
         }
 
-        // فتح الملف الشخصي للتعديل (من داخل الصف)
         function openStudentProfile(clsIdx, stdIdx) {
             currentClassIdx = clsIdx;
             currentStudentIdx = stdIdx;
@@ -569,14 +587,14 @@
             showScreen('screen-profile');
         }
 
-        // فتح معاينة الطالب (من البحث)
         function openStudentPreview(clsIdx, stdIdx) {
             const cls = appData.classes[clsIdx];
             const std = cls.students[stdIdx];
 
             document.getElementById('previewName').innerText = std.name;
             document.getElementById('previewClass').innerText = `${cls.name} - ${cls.section}`;
-            document.getElementById('previewAbsence').innerText = std.absences || 0;
+            const absences = std.absences || 0;
+            document.getElementById('previewAbsence').innerText = absences;
             document.getElementById('previewBehavior').innerText = std.behavior || "لا يوجد";
 
             const list = document.getElementById('previewGradesList');
@@ -601,6 +619,8 @@
                     list.appendChild(item);
                 });
             }
+
+            // تمت إزالة شرط فحص الغياب، الرسالة الآن ثابتة في html و css
 
             showScreen('screen-preview');
         }
@@ -680,7 +700,6 @@
                             </div>
                             <i class="fas fa-eye" style="color:var(--primary);"></i>
                         `;
-                        // التعديل هنا: عند الضغط يتم فتح المعاينة بدلاً من التعديل
                         div.onclick = () => openStudentPreview(cIdx, sIdx);
                         resultsDiv.appendChild(div);
                     }
