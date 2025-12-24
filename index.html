@@ -8,15 +8,8 @@
     <meta name="theme-color" content="#6366f1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="application-name" content="مدرستي برو">
-    <meta name="apple-mobile-web-app-title" content="مدرستي برو">
     
-    <link rel="manifest" href="manifest.json">
-
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/167/167707.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/167/167707.png">
-
     <title>مدرستي برو - الإدارة</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
@@ -48,9 +41,8 @@
             animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             color: var(--text);
-            padding-bottom: 80px;
+            padding-bottom: 90px;
             overflow-x: hidden;
-            /* منع السحب لتحديث الصفحة ليعطي شعور التطبيق */
             overscroll-behavior-y: contain; 
         }
 
@@ -103,6 +95,7 @@
         }
 
         h2, h3 { color: white; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card-panel h3 { color: var(--primary); text-shadow: none; }
 
         .card-panel {
             background: var(--glass);
@@ -116,20 +109,20 @@
 
         input, select {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: 2px solid #cbd5e1;
             border-radius: 12px;
             font-size: 1rem;
             background-color: #ffffff !important;
             color: #000000 !important;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 700;
         }
         input:focus, select:focus { border-color: var(--primary); }
 
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: var(--primary);
             color: white;
             border: none;
@@ -142,10 +135,12 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            margin-bottom: 10px;
         }
         .btn:active { transform: scale(0.96); }
-        .btn-secondary { background: var(--secondary); }
-        .btn-small { width: auto; padding: 8px 15px; font-size: 0.9rem; }
+        .btn-secondary { background: var(--secondary); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4); }
+        .btn-green { background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        .btn-small { width: auto; padding: 8px 15px; font-size: 0.9rem; margin: 0; }
 
         .classes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
         .class-card { background: white; padding: 20px; border-radius: var(--radius); text-align: center; position: relative; cursor: pointer; }
@@ -153,16 +148,73 @@
         .class-icon { width: 50px; height: 50px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto; }
 
         .student-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #000000; }
-        .grade-edit-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        
+        .grade-row-container {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+        }
+        .grade-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* تنسيقات شاشة المعاينة */
+        .preview-stat-box {
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .preview-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-right: 4px solid var(--secondary);
+        }
+        .preview-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            background: #fffbeb;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            border: 1px dashed #fcd34d;
+        }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; display: none; justify-content: space-around; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 100; }
-        .nav-item { font-size: 1.5rem; color: #94a3b8; cursor: pointer; }
-        .nav-item.active { color: var(--primary); }
-        
-        .remove-grade-btn { color: #ef4444; padding: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .nav-item { font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--primary); transform: translateY(-5px); }
+
+        .whatsapp-float {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 9999;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
+
+    <a href="https://wa.me/9647812534439" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp" style="font-size:1.2rem;"></i> الدعم الفني
+    </a>
 
     <div id="screen-login">
         <div class="login-box">
@@ -180,34 +232,62 @@
         
         <div id="screen-setup" class="screen">
             <h2><i class="fas fa-university"></i> إعداد المدرسة</h2>
+            <p style="color:white; text-align:center; margin-bottom:10px; font-size:0.8rem;">تنبيه: يتم تسجيل المدرسة لمرة واحدة فقط</p>
             <div class="card-panel">
                 <label>اسم المدرسة</label>
                 <input type="text" id="setupSchoolName" placeholder="اكتب اسم المدرسة">
                 <label>العام الدراسي</label>
                 <input type="text" id="setupYear" placeholder="2024 - 2025">
             </div>
-            <div class="card-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <label>المرشدين</label>
-                    <button class="btn btn-small btn-secondary" onclick="addCounselorField()"><i class="fas fa-plus"></i></button>
-                </div>
-                <div id="counselors-container">
-                    <input type="text" class="counselor-input" placeholder="اسم المرشد">
-                </div>
-            </div>
-            <button class="btn" onclick="saveSchoolSettings()">حفظ ودخول</button>
+            <button class="btn" onclick="saveSchoolSettings()">حفظ واعتماد المدرسة</button>
         </div>
 
         <div id="screen-main" class="screen">
             <div id="schoolHeader" style="text-align:center; color:white; margin-bottom:20px;"></div>
             <div class="card-panel">
-                <label>إضافة صف</label>
+                <label>إضافة صف جديد</label>
                 <div style="display:flex; gap:10px;">
                     <input type="text" id="newClassInput" placeholder="اسم الصف (مثال: الأول)">
                     <button class="btn btn-secondary" onclick="addNewClass()" style="width:60px;"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
             <div id="classesContainer" class="classes-grid"></div>
+        </div>
+
+        <div id="screen-search" class="screen">
+            <h2><i class="fas fa-search"></i> البحث عن طالب</h2>
+            <div class="card-panel">
+                <input type="text" id="searchInput" placeholder="اكتب اسم الطالب للبحث..." onkeyup="searchStudents()">
+            </div>
+            <div id="searchResults" style="padding-bottom:60px;"></div>
+        </div>
+
+        <div id="screen-preview" class="screen">
+            <button class="btn btn-small" style="background:rgba(255,255,255,0.3); margin-bottom:15px; width:100%;" onclick="showScreen('screen-search')"><i class="fas fa-arrow-right"></i> عودة للبحث</button>
+            
+            <div class="card-panel" style="text-align:center;">
+                <div style="width:70px; height:70px; background:var(--secondary); border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.5rem;"><i class="fas fa-user"></i></div>
+                <h2 id="previewName" style="color:var(--text); margin:0;">اسم الطالب</h2>
+                <p id="previewClass" style="color:#64748b; font-size:0.9rem;">الصف</p>
+            </div>
+
+            <div class="card-panel">
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <div class="preview-stat-box" style="flex:1;">
+                        <span style="display:block; font-size:0.8rem; color:#64748b;">الغيابات</span>
+                        <strong id="previewAbsence" style="font-size:1.2rem; color:var(--primary);">0</strong>
+                    </div>
+                    <div class="preview-stat-box" style="flex:1;">
+                        <span style="display:block; font-size:0.8rem; color:#64748b;">السلوك</span>
+                        <strong id="previewBehavior" style="font-size:1rem; color:var(--secondary);">جيد</strong>
+                    </div>
+                </div>
+                
+                <h3 style="text-align:right; font-size:1.1rem; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px;">سجل الدرجات والملاحظات</h3>
+                <div id="previewGradesList">
+                    </div>
+            </div>
+            <div style="height:60px;"></div>
         </div>
 
         <div id="screen-details" class="screen">
@@ -226,21 +306,24 @@
                 <hr style="border:0; border-top:1px solid #ddd; margin:15px 0;">
                 <label>اسم الطالب</label>
                 <input type="text" id="studentName" placeholder="الاسم الثلاثي">
-                <label style="color:var(--primary);"><i class="fas fa-key"></i> كلمة المرور (لولي الأمر)</label>
+                <label style="color:var(--primary);"><i class="fas fa-key"></i> كلمة المرور (يجب أن لا تتكرر)</label>
                 <input type="text" id="studentPass" placeholder="تعيين كلمة سر">
+                
                 <div style="display:flex; gap:10px;">
                     <div style="flex:1"><label>الغيابات</label><input type="number" id="studentAbsence" placeholder="0"></div>
                     <div style="flex:1"><label>السلوك</label><input type="text" id="studentBehavior" placeholder="جيد، مشاغب..."></div>
                 </div>
-                <label>إضافة مواد</label>
-                <select id="subjectSelector" onchange="addSubjectField(this.value)">
-                    <option value="" disabled selected>-- اختر مادة --</option>
-                    <option>الإسلامية</option><option>العربية</option><option>الإنكليزية</option>
-                    <option>الرياضيات</option><option>العلوم</option><option>الاجتماعيات</option>
-                    <option>الفيزياء</option><option>الكيمياء</option><option>الأحياء</option>
-                    <option>الحاسوب</option><option>الرياضة</option><option>الفنية</option>
-                </select>
-                <div id="dynamicGradesContainer"></div>
+
+                <div style="background: #e0e7ff; padding: 10px; border-radius: 12px; margin-top:10px;">
+                    <label>إضافة مادة للجدول</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="tempSubjectInput" placeholder="اسم المادة (مثال: رياضيات)">
+                        <button class="btn btn-small btn-secondary" onclick="addSubjectField()"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <div id="dynamicGradesContainer" style="margin-top:15px;"></div>
+                
                 <button class="btn" onclick="addNewStudent()" style="margin-top:15px;"><i class="fas fa-save"></i> حفظ الطالب</button>
             </div>
             <h3 style="font-size:1rem; text-align:right; margin-bottom:10px;">قائمة الطلاب:</h3>
@@ -255,26 +338,27 @@
                 <p id="profileClass" style="color:#64748b; font-size:0.9rem;">الصف</p>
             </div>
             <div class="card-panel">
-                <h3 style="color:var(--primary); text-align:right; font-size:1.1rem; margin-bottom:15px;"><i class="fas fa-edit"></i> البيانات الأساسية</h3>
+                <h3 style="text-align:right; font-size:1.1rem; margin-bottom:15px;"><i class="fas fa-edit"></i> البيانات الأساسية</h3>
                 <label>كلمة المرور</label><input type="text" id="editStudentPass">
                 <div style="display:flex; gap:10px;">
                     <div style="flex:1"><label>الغيابات</label><input type="number" id="editStudentAbsence"></div>
                     <div style="flex:1"><label>السلوك</label><input type="text" id="editStudentBehavior"></div>
                 </div>
+                
                 <hr style="border:0; border-top:1px solid #ddd; margin:15px 0;">
+                
                 <div style="background: #e0e7ff; padding: 10px; border-radius: 12px; margin-bottom: 20px;">
-                    <label style="color:var(--primary); margin-bottom:5px;">إضافة مادة جديدة للسجل:</label>
-                    <select id="profileSubjectAdd" onchange="addSubjectToProfile(this.value)" style="margin-bottom:0;">
-                        <option value="" disabled selected>-- اختر مادة لإضافتها الآن --</option>
-                        <option>الإسلامية</option><option>العربية</option><option>الإنكليزية</option>
-                        <option>الرياضيات</option><option>العلوم</option><option>الاجتماعيات</option>
-                        <option>الفيزياء</option><option>الكيمياء</option><option>الأحياء</option>
-                        <option>الحاسوب</option><option>الرياضة</option><option>الفنية</option>
-                    </select>
+                    <label style="color:var(--primary); margin-bottom:5px;">إضافة مادة جديدة:</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="profileSubjectInput" placeholder="اسم المادة...">
+                        <button class="btn btn-small" onclick="addSubjectToProfile()" style="width:60px;"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
-                <h3 style="color:var(--primary); text-align:right; font-size:1.1rem; margin-bottom:15px;"><i class="fas fa-star"></i> سجل الدرجات</h3>
+
+                <h3 style="text-align:right; font-size:1.1rem; margin-bottom:15px;"><i class="fas fa-star"></i> السجل الدراسي</h3>
                 <div id="profileGradesContainer"></div>
-                <button class="btn" onclick="saveModifiedStudent()"><i class="fas fa-check-circle"></i> حفظ كافة التعديلات</button>
+                
+                <button class="btn btn-green" onclick="saveModifiedStudent()"><i class="fas fa-check-circle"></i> حفظ كافة التعديلات</button>
             </div>
             <button class="btn" onclick="deleteStudent()" style="background:#ef4444; margin-top:10px;"><i class="fas fa-trash"></i> حذف السجل</button>
             <div style="height:60px;"></div>
@@ -282,7 +366,8 @@
     </div>
 
     <div class="bottom-nav" id="mainNav">
-        <div class="nav-item active" onclick="if(appData.settings) showScreen('screen-main')"><i class="fas fa-home"></i></div>
+        <div class="nav-item active" onclick="navTo('screen-main')"><i class="fas fa-home"></i></div>
+        <div class="nav-item" onclick="navTo('screen-search')"><i class="fas fa-search"></i></div>
         <div class="nav-item" onclick="resetApp()"><i class="fas fa-cog"></i></div>
     </div>
 
@@ -290,7 +375,14 @@
         let appData = { settings: null, classes: [] };
         let currentClassIdx = null;
         let currentStudentIdx = null;
-        const monthsList = ["الشهر الأول", "الشهر الثاني", "نصف السنة", "الشهر الرابع", "الشهر الخامس", "النهائي"];
+
+        function navTo(screenId) {
+            if(!appData.settings) return;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(screenId === 'screen-main') document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if(screenId === 'screen-search') document.querySelectorAll('.nav-item')[1].classList.add('active');
+            showScreen(screenId);
+        }
 
         function checkLogin() {
             const pin = document.getElementById('loginPin').value;
@@ -304,23 +396,28 @@
                 }});
             } else {
                 alert('رمز الدخول غير صحيح!');
-                document.getElementById('loginPin').value = '';
                 gsap.fromTo("#loginPin", {x:-10}, {x:10, duration:0.1, repeat:3, yoyo:true});
             }
         }
 
         function initApp() {
-            const s = localStorage.getItem('schoolSettings_v7');
-            const c = localStorage.getItem('schoolClasses_v7');
+            const s = localStorage.getItem('schoolSettings_v8');
+            const c = localStorage.getItem('schoolClasses_v8');
             if(s) appData.settings = JSON.parse(s);
             if(c) appData.classes = JSON.parse(c);
-            if(!appData.settings) showScreen('screen-setup');
-            else { updateHeader(); showScreen('screen-main'); renderClasses(); }
+            
+            if(!appData.settings) {
+                showScreen('screen-setup');
+            } else { 
+                updateHeader(); 
+                showScreen('screen-main'); 
+                renderClasses(); 
+            }
         }
 
         function saveData() {
-            localStorage.setItem('schoolSettings_v7', JSON.stringify(appData.settings));
-            localStorage.setItem('schoolClasses_v7', JSON.stringify(appData.classes));
+            localStorage.setItem('schoolSettings_v8', JSON.stringify(appData.settings));
+            localStorage.setItem('schoolClasses_v8', JSON.stringify(appData.classes));
         }
 
         function showScreen(id) {
@@ -329,22 +426,23 @@
             window.scrollTo(0,0);
         }
 
-        function addCounselorField() {
-            const i = document.createElement('input'); i.className = 'counselor-input'; i.placeholder = 'اسم مرشد إضافي'; i.style.marginTop = '10px';
-            document.getElementById('counselors-container').appendChild(i);
-        }
         function saveSchoolSettings() {
             const name = document.getElementById('setupSchoolName').value;
             const year = document.getElementById('setupYear').value;
             if(!name) return alert('أدخل اسم المدرسة');
-            appData.settings = { schoolName: name, year: year }; saveData(); updateHeader(); showScreen('screen-main');
+            appData.settings = { schoolName: name, year: year }; 
+            saveData(); 
+            updateHeader(); 
+            showScreen('screen-main');
         }
+
         function updateHeader() { document.getElementById('schoolHeader').innerHTML = `<h1 style="margin:0; font-size:1.4rem;">${appData.settings.schoolName}</h1><p>${appData.settings.year}</p>`; }
 
         function addNewClass() {
             const name = document.getElementById('newClassInput').value;
             if(name) { appData.classes.push({ id: Date.now(), name: name, section: '', students: [] }); saveData(); renderClasses(); document.getElementById('newClassInput').value = ''; }
         }
+
         function renderClasses() {
             const c = document.getElementById('classesContainer'); c.innerHTML = '';
             appData.classes.forEach((cls, idx) => {
@@ -359,36 +457,80 @@
         function openClassDetails(idx) {
             currentClassIdx = idx; const cls = appData.classes[idx];
             document.getElementById('detailClassName').value = cls.name; document.getElementById('detailSectionName').value = cls.section || '';
-            document.getElementById('studentName').value = ''; document.getElementById('studentPass').value = '';
-            document.getElementById('studentAbsence').value = ''; document.getElementById('studentBehavior').value = '';
+            document.getElementById('studentName').value = ''; 
+            document.getElementById('studentPass').value = '';
+            document.getElementById('studentAbsence').value = ''; 
+            document.getElementById('studentBehavior').value = '';
             document.getElementById('dynamicGradesContainer').innerHTML = '';
             renderStudentsList(); showScreen('screen-details');
         }
 
-        function getMonthsOptions(selectedMonth) { return monthsList.map(m => `<option value="${m}" ${m === selectedMonth ? 'selected' : ''}>${m}</option>`).join(''); }
+        function isPasswordTaken(password, excludeStudentId = null) {
+            for(let c of appData.classes) {
+                for(let s of c.students) {
+                    if(s.password === password) {
+                        if(excludeStudentId && s.id === excludeStudentId) continue;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
-        function addSubjectField(sub) {
+        function addSubjectField() {
+            const subName = document.getElementById('tempSubjectInput').value;
+            if(!subName) return alert('اكتب اسم المادة أولاً');
+
             const div = document.createElement('div');
-            div.innerHTML = `<div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:10px; border-right:4px solid var(--primary);"><div style="display:flex; justify-content:space-between;"><span style="font-weight:bold; color:#000;">${sub}</span><i class="fas fa-times" style="color:red;" onclick="this.parentElement.parentElement.parentElement.remove()"></i></div><div style="display:flex; gap:5px; margin-top:5px;"><select class="new-month-inp">${getMonthsOptions("الشهر الأول")}</select><input type="number" class="new-grade-inp" data-sub="${sub}" placeholder="الدرجة"></div></div>`;
+            div.className = 'grade-row-container';
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <input type="text" class="sub-name-inp" value="${subName}" style="border:none; background:transparent !important; font-weight:bold; color:var(--primary); padding:0; width:auto; margin:0;">
+                    <i class="fas fa-times" style="color:red; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
+                <div class="grade-inputs-grid">
+                    <input type="text" class="month-inp" placeholder="الشهر (مثال: الأول)">
+                    <input type="number" class="grade-inp" placeholder="الدرجة">
+                </div>
+                <input type="text" class="note-inp" placeholder="ملاحظات للأستاذ..." style="margin-top:5px; border-style:dashed;">
+            `;
             document.getElementById('dynamicGradesContainer').appendChild(div);
-            document.getElementById('subjectSelector').selectedIndex = 0;
+            document.getElementById('tempSubjectInput').value = '';
         }
 
         function addNewStudent() {
-            const name = document.getElementById('studentName').value; const pass = document.getElementById('studentPass').value;
-            const abs = document.getElementById('studentAbsence').value || 0; const beh = document.getElementById('studentBehavior').value || "جيد";
+            const name = document.getElementById('studentName').value; 
+            const pass = document.getElementById('studentPass').value;
+            const abs = document.getElementById('studentAbsence').value || 0; 
+            const beh = document.getElementById('studentBehavior').value || "جيد";
             const section = document.getElementById('detailSectionName').value;
+            
             if(!name || !pass) return alert('الاسم وكلمة المرور مطلوبان');
+            
+            if(isPasswordTaken(pass)) {
+                return alert('خطأ: كلمة المرور مستخدمة لطالب آخر! الرجاء اختيار كلمة مرور مختلفة.');
+            }
+
             appData.classes[currentClassIdx].section = section;
             let grades = [];
+            
             const gradeDivs = document.getElementById('dynamicGradesContainer').children;
             for(let div of gradeDivs) {
-                const sub = div.querySelector('.new-grade-inp').getAttribute('data-sub');
-                const month = div.querySelector('.new-month-inp').value;
-                const val = div.querySelector('.new-grade-inp').value;
-                if(val) grades.push({ sub: sub, month: month, val: val });
+                const sub = div.querySelector('.sub-name-inp').value;
+                const month = div.querySelector('.month-inp').value;
+                const val = div.querySelector('.grade-inp').value;
+                const note = div.querySelector('.note-inp').value;
+                if(sub) grades.push({ sub: sub, month: month || "عام", val: val || "", note: note || "" });
             }
-            appData.classes[currentClassIdx].students.push({ id: Date.now(), name: name, password: pass, absences: abs, behavior: beh, grades: grades });
+            
+            appData.classes[currentClassIdx].students.push({ 
+                id: Date.now(), 
+                name: name, 
+                password: pass, 
+                absences: abs, 
+                behavior: beh, 
+                grades: grades 
+            });
             saveData(); openClassDetails(currentClassIdx);
         }
 
@@ -396,43 +538,155 @@
             const list = document.getElementById('studentsList'); list.innerHTML = '';
             const students = appData.classes[currentClassIdx].students;
             [...students].reverse().forEach((std, revIdx) => {
-                const realIdx = students.indexOf(std); const div = document.createElement('div'); div.className = 'student-item';
-                div.onclick = () => openStudentProfile(realIdx);
+                const realIdx = students.indexOf(std); 
+                const div = document.createElement('div'); 
+                div.className = 'student-item';
+                div.onclick = () => openStudentProfile(currentClassIdx, realIdx);
                 div.innerHTML = `<div><div style="font-weight:bold;">${std.name}</div><small style="color:#64748b;">كلمة السر: ${std.password}</small></div><i class="fas fa-chevron-left" style="color:#cbd5e1;"></i>`;
                 list.appendChild(div);
             });
         }
 
-        function openStudentProfile(stdIdx) {
-            currentStudentIdx = stdIdx; const cls = appData.classes[currentClassIdx]; const std = cls.students[stdIdx];
-            document.getElementById('profileName').innerText = std.name; document.getElementById('profileClass').innerText = `${cls.name} - ${cls.section}`;
-            document.getElementById('editStudentPass').value = std.password; document.getElementById('editStudentAbsence').value = std.absences || 0; document.getElementById('editStudentBehavior').value = std.behavior || "";
-            document.getElementById('profileSubjectAdd').selectedIndex = 0;
+        // فتح الملف الشخصي للتعديل (من داخل الصف)
+        function openStudentProfile(clsIdx, stdIdx) {
+            currentClassIdx = clsIdx;
+            currentStudentIdx = stdIdx;
+            
+            const cls = appData.classes[clsIdx]; 
+            const std = cls.students[stdIdx];
+            
+            document.getElementById('profileName').innerText = std.name; 
+            document.getElementById('profileClass').innerText = `${cls.name} - ${cls.section}`;
+            
+            document.getElementById('editStudentPass').value = std.password; 
+            document.getElementById('editStudentAbsence').value = std.absences || 0; 
+            document.getElementById('editStudentBehavior').value = std.behavior || "";
+            document.getElementById('profileSubjectInput').value = '';
+            
             const container = document.getElementById('profileGradesContainer'); container.innerHTML = '';
-            std.grades.forEach((g) => { addGradeRowToProfile(g.sub, g.month, g.val); });
+            std.grades.forEach((g) => { addGradeRowToProfile(g.sub, g.month, g.val, g.note); });
+            
             showScreen('screen-profile');
         }
 
-        function addSubjectToProfile(subjectName) { addGradeRowToProfile(subjectName, "الشهر الأول", ""); document.getElementById('profileSubjectAdd').selectedIndex = 0; }
+        // فتح معاينة الطالب (من البحث)
+        function openStudentPreview(clsIdx, stdIdx) {
+            const cls = appData.classes[clsIdx];
+            const std = cls.students[stdIdx];
 
-        function addGradeRowToProfile(sub, month, val) {
-            const container = document.getElementById('profileGradesContainer'); const row = document.createElement('div'); row.className = 'grade-edit-row';
-            row.innerHTML = `<div style="flex:1;"><label class="subject-label" style="color:var(--primary); font-weight:bold;">${sub}</label><select class="edit-month">${getMonthsOptions(month || "الشهر الأول")}</select></div><div style="flex:0.5;"><label>الدرجة</label><input type="number" class="edit-val" value="${val}" placeholder="00"></div><div class="remove-grade-btn" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></div>`;
+            document.getElementById('previewName').innerText = std.name;
+            document.getElementById('previewClass').innerText = `${cls.name} - ${cls.section}`;
+            document.getElementById('previewAbsence').innerText = std.absences || 0;
+            document.getElementById('previewBehavior').innerText = std.behavior || "لا يوجد";
+
+            const list = document.getElementById('previewGradesList');
+            list.innerHTML = '';
+
+            if(std.grades.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px;">لا توجد مواد مسجلة.</p>';
+            } else {
+                std.grades.forEach(g => {
+                    const item = document.createElement('div');
+                    item.className = 'preview-item';
+                    item.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <strong style="color:var(--primary); font-size:1.1rem;">${g.sub}</strong>
+                            <span style="background:#e0e7ff; color:var(--primary); padding:2px 8px; border-radius:8px; font-size:0.8rem;">${g.month || '-'}</span>
+                        </div>
+                        <div style="font-size:1.2rem; font-weight:bold; color:#334155;">
+                            الدرجة: ${g.val || '<span style="color:#cbd5e1;">--</span>'}
+                        </div>
+                        ${g.note ? `<div class="preview-note"><i class="fas fa-sticky-note"></i> ${g.note}</div>` : ''}
+                    `;
+                    list.appendChild(item);
+                });
+            }
+
+            showScreen('screen-preview');
+        }
+
+        function addSubjectToProfile() { 
+            const sub = document.getElementById('profileSubjectInput').value;
+            if(sub) {
+                addGradeRowToProfile(sub, "", "", ""); 
+                document.getElementById('profileSubjectInput').value = ''; 
+            }
+        }
+
+        function addGradeRowToProfile(sub, month, val, note) {
+            const container = document.getElementById('profileGradesContainer'); 
+            const row = document.createElement('div'); 
+            row.className = 'grade-row-container';
+            row.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <input type="text" class="edit-sub" value="${sub}" style="font-weight:bold; border:none; background:transparent!important; color:var(--primary); padding:0; width:auto;">
+                    <i class="fas fa-trash" style="color:#ef4444; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
+                <div class="grade-inputs-grid">
+                    <input type="text" class="edit-month" value="${month}" placeholder="الشهر">
+                    <input type="number" class="edit-val" value="${val}" placeholder="الدرجة">
+                </div>
+                <input type="text" class="edit-note" value="${note || ''}" placeholder="ملاحظات..." style="margin-top:5px; border-style:dashed;">
+            `;
             container.appendChild(row);
         }
 
         function saveModifiedStudent() {
             const std = appData.classes[currentClassIdx].students[currentStudentIdx];
-            std.password = document.getElementById('editStudentPass').value; std.absences = document.getElementById('editStudentAbsence').value; std.behavior = document.getElementById('editStudentBehavior').value;
+            const newPass = document.getElementById('editStudentPass').value;
+            
+            if(isPasswordTaken(newPass, std.id)) {
+                return alert('خطأ: كلمة المرور هذه مستخدمة لطالب آخر، الرجاء استخدام كلمة مختلفة.');
+            }
+
+            std.password = newPass; 
+            std.absences = document.getElementById('editStudentAbsence').value; 
+            std.behavior = document.getElementById('editStudentBehavior').value;
+            
             const newGrades = [];
-            document.getElementById('profileGradesContainer').querySelectorAll('.grade-edit-row').forEach((row) => {
-                newGrades.push({ sub: row.querySelector('.subject-label').innerText, month: row.querySelector('.edit-month').value, val: row.querySelector('.edit-val').value });
+            document.getElementById('profileGradesContainer').querySelectorAll('.grade-row-container').forEach((row) => {
+                newGrades.push({ 
+                    sub: row.querySelector('.edit-sub').value, 
+                    month: row.querySelector('.edit-month').value, 
+                    val: row.querySelector('.edit-val').value,
+                    note: row.querySelector('.edit-note').value
+                });
             });
-            std.grades = newGrades; saveData(); alert('تم حفظ التعديلات!');
+            std.grades = newGrades; 
+            saveData(); 
+            alert('تم حفظ التعديلات بنجاح!');
         }
 
         function deleteStudent() { if(confirm('هل أنت متأكد من حذف هذا السجل؟')) { appData.classes[currentClassIdx].students.splice(currentStudentIdx, 1); saveData(); showScreen('screen-details'); renderStudentsList(); } }
-        function resetApp() { if(confirm('حذف جميع البيانات؟')) { localStorage.clear(); location.reload(); } }
+        
+        function resetApp() { if(confirm('تحذير: هذا الخيار سيقوم بمسح جميع بيانات المدرسة والطلاب!\nهل أنت متأكد؟')) { localStorage.clear(); location.reload(); } }
+
+        function searchStudents() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';
+
+            if(query.length < 2) return;
+
+            appData.classes.forEach((cls, cIdx) => {
+                cls.students.forEach((std, sIdx) => {
+                    if(std.name.toLowerCase().includes(query)) {
+                        const div = document.createElement('div');
+                        div.className = 'student-item';
+                        div.innerHTML = `
+                            <div>
+                                <div style="font-weight:bold;">${std.name}</div>
+                                <small style="color:#64748b;">${cls.name} - ${cls.section}</small>
+                            </div>
+                            <i class="fas fa-eye" style="color:var(--primary);"></i>
+                        `;
+                        // التعديل هنا: عند الضغط يتم فتح المعاينة بدلاً من التعديل
+                        div.onclick = () => openStudentPreview(cIdx, sIdx);
+                        resultsDiv.appendChild(div);
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>
