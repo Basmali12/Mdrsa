@@ -205,29 +205,31 @@
         .nav-item { font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: 0.3s; }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
 
+        /* تعديل زر الواتساب ليكون أيقونة صغيرة دائرية فقط */
         .whatsapp-float {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px;
             background-color: #25d366;
             color: white;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-weight: bold;
+            border-radius: 50%; /* جعلها دائرية */
+            width: 40px; /* عرض ثابت صغير */
+            height: 40px; /* ارتفاع ثابت صغير */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
             z-index: 9999;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
+            font-size: 1.3rem; /* حجم الأيقونة */
+            padding: 0; /* إزالة الحشوة الزائدة */
         }
     </style>
 </head>
 <body>
 
     <a href="https://wa.me/9647812534439" target="_blank" class="whatsapp-float">
-        <i class="fab fa-whatsapp" style="font-size:1.2rem;"></i> الدعم الفني
+        <i class="fab fa-whatsapp"></i>
     </a>
 
     <div id="screen-login">
@@ -403,9 +405,10 @@
             showScreen(screenId);
         }
 
+        // تم تعديل رمز الدخول هنا
         function checkLogin() {
             const pin = document.getElementById('loginPin').value;
-            if(pin === '1001') {
+            if(pin === '990') { // الرمز الجديد 990
                 const loginScreen = document.getElementById('screen-login');
                 gsap.to(loginScreen, {opacity: 0, duration: 0.5, onComplete: () => {
                     loginScreen.style.display = 'none';
@@ -619,8 +622,6 @@
                     list.appendChild(item);
                 });
             }
-
-            // تمت إزالة شرط فحص الغياب، الرسالة الآن ثابتة في html و css
 
             showScreen('screen-preview');
         }
