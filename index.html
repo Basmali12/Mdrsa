@@ -1,11 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مدرستي برو - الإدارة (Online)</title>
+    <title>مدرستي برو - الإدارة (Local)</title>
     
+    <link rel="manifest" href="manifest.json">
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -24,6 +25,7 @@
         .card-panel { background: var(--glass); padding: 20px; border-radius: var(--radius); margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         input, select { width: 100%; padding: 12px; border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1rem; background-color: #ffffff !important; color: #000000 !important; margin-bottom: 10px; font-weight: 700; }
         input:focus { border-color: var(--primary); }
+        input[readonly] { background-color: #e2e8f0 !important; color: #64748b !important; cursor: not-allowed; }
         .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
         .btn:active { transform: scale(0.96); }
         .btn-secondary { background: var(--secondary); }
@@ -40,19 +42,13 @@
         .nav-item { font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: 0.3s; }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
         
-        /* تنسيقات الجدول الجديد */
         .grades-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
         .grades-table th { background: #e0e7ff; color: var(--primary); padding: 10px; border: 1px solid #cbd5e1; }
         .grades-table td { padding: 8px; border: 1px solid #cbd5e1; text-align: center; background: white; color: #333; }
         .grades-table tr:nth-child(even) td { background: #f8fafc; }
         
-        /* تنسيق المرشد التربوي */
         .counselor-box { background: #fff1f2; border: 1px solid #fda4af; padding: 10px; border-radius: 8px; margin-top: 5px; color: #be123c; font-size: 0.9rem; }
 
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 20000; display: flex; justify-content: center; align-items: center; color: white; flex-direction: column; display: none; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
         .whatsapp-float { position: fixed; top: 20px; left: 20px; background-color: #25d366; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 9999; text-decoration: none; font-size: 1.3rem; }
     </style>
 </head>
@@ -60,34 +56,30 @@
 
     <a href="https://wa.me/9647812534439" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
 
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <p>جاري الاتصال بقاعدة البيانات...</p>
-    </div>
-
     <div id="screen-login">
         <div class="login-box">
             <div style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"><i class="fas fa-lock"></i></div>
-            <h2 style="color: #333; margin-bottom: 10px;">مرحباً بك</h2>
-            <p style="color:#666; margin-bottom: 25px;">أدخل البريد الإلكتروني للمتابعة</p>
-            <input type="email" id="loginEmailInput" placeholder="example@gmail.com" style="direction: ltr; text-align: left;">
+            <h2 style="color: #333; margin-bottom: 10px;">لوحة الإدارة</h2>
+            <p style="color:#666; margin-bottom: 25px;">الحفظ محلي في المتصفح</p>
+            
+            <input type="email" id="loginEmailInput" value="admin@gmail.com" readonly style="direction: ltr; text-align: center;">
+            
             <button class="btn" onclick="checkLogin()">دخول للنظام</button>
         </div>
     </div>
 
     <div class="app-container" id="mainAppContainer">
+        
         <div id="screen-setup" class="screen">
-            <h2><i class="fas fa-database"></i> إعداد قاعدة البيانات</h2>
-            <p style="color:white; text-align:center; margin-bottom:10px; font-size:0.8rem;">سيتم إنشاء الجداول والحقول تلقائياً عند الحفظ</p>
+            <h2><i class="fas fa-database"></i> إعداد المدرسة</h2>
+            <p style="color:white; text-align:center; margin-bottom:10px; font-size:0.8rem;">يتم الحفظ في المتصفح</p>
             <div class="card-panel">
                 <label>اسم المدرسة</label>
                 <input type="text" id="setupSchoolName" placeholder="اكتب اسم المدرسة">
-                <label>البريد الإلكتروني (Admin)</label>
-                <input type="email" id="setupEmail" placeholder="example@gmail.com" style="direction: ltr;">
                 <label>العام الدراسي</label>
                 <input type="text" id="setupYear" placeholder="2024 - 2025">
             </div>
-            <button class="btn" onclick="saveSchoolSettings()">حفظ وإنشاء البيانات</button>
+            <button class="btn" onclick="saveSchoolSettings()">بدء العمل</button>
         </div>
 
         <div id="screen-main" class="screen">
@@ -132,8 +124,7 @@
                                 <th>ملاحظات</th>
                             </tr>
                         </thead>
-                        <tbody id="previewGradesTableBody">
-                            </tbody>
+                        <tbody id="previewGradesTableBody"></tbody>
                     </table>
                 </div>
 
@@ -220,151 +211,98 @@
         <div class="nav-item" onclick="resetApp()"><i class="fas fa-cog"></i></div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, arrayUnion, arrayRemove } 
-        from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA_62YEw_4tGV5btFqb83R_2JxraAFTevw",
-            authDomain: "mdrsa-c548d.firebaseapp.com",
-            projectId: "mdrsa-c548d",
-            storageBucket: "mdrsa-c548d.firebasestorage.app",
-            messagingSenderId: "114929996060",
-            appId: "1:114929996060:web:ce96d7e193932cfb1fead9",
-            measurementId: "G-4B6M8F1R6N"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app);
-
+    <script>
+        // --- إدارة قاعدة البيانات المحلية ---
+        const DB_KEY = 'school_local_db';
+        
+        // المتغيرات العامة
         window.appData = { settings: null, classes: [] };
         window.currentClassId = null;
         window.currentStudentIdx = null;
 
-        window.showLoading = () => document.getElementById('loading-overlay').style.display = 'flex';
-        window.hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
-
-        window.onload = async function() {
-            showLoading();
-            try {
-                const settingsRef = doc(db, "settings", "schoolConfig");
-                const settingsSnap = await getDoc(settingsRef);
-
-                if (settingsSnap.exists()) {
-                    window.appData.settings = settingsSnap.data();
-                    hideLoading();
-                    document.getElementById('screen-login').style.display = 'flex';
-                } else {
-                    hideLoading();
-                    document.getElementById('screen-login').style.display = 'none';
-                    document.getElementById('mainAppContainer').style.display = 'block';
-                    showScreen('screen-setup');
-                }
-            } catch (error) {
-                console.error("Firebase Error:", error);
-                alert("حدث خطأ في الاتصال بقاعدة البيانات. تأكد من الإنترنت.");
-                hideLoading();
+        // دالة التحميل عند البدء
+        window.onload = function() {
+            // تحميل البيانات من المتصفح
+            const savedData = localStorage.getItem(DB_KEY);
+            if (savedData) {
+                window.appData = JSON.parse(savedData);
             }
-        };
 
-        window.checkLogin = function() {
-            const inputEmail = document.getElementById('loginEmailInput').value.trim();
-            const savedEmail = window.appData.settings.adminEmail;
-
-            if (inputEmail === savedEmail) {
-                const loginScreen = document.getElementById('screen-login');
-                gsap.to(loginScreen, {opacity: 0, duration: 0.5, onComplete: () => {
-                    loginScreen.style.display = 'none';
-                    document.getElementById('mainAppContainer').style.display = 'block';
-                    document.getElementById('mainNav').style.display = 'flex';
-                    initApp();
-                }});
+            // التحقق هل توجد إعدادات مسبقة
+            if (window.appData.settings) {
+                document.getElementById('screen-login').style.display = 'flex';
             } else {
-                alert('البريد الإلكتروني غير صحيح!');
+                document.getElementById('screen-login').style.display = 'none';
+                document.getElementById('mainAppContainer').style.display = 'block';
+                showScreen('screen-setup');
             }
         };
 
-        async function initApp() {
-            showLoading();
-            updateHeader();
-            try {
-                window.appData.classes = [];
-                const querySnapshot = await getDocs(collection(db, "classes"));
-                querySnapshot.forEach((doc) => {
-                    window.appData.classes.push({ id: doc.id, ...doc.data() });
-                });
-                renderClasses();
-                showScreen('screen-main');
-            } catch (e) {
-                alert("خطأ في جلب البيانات: " + e.message);
-            }
-            hideLoading();
+        // دالة الحفظ في المتصفح
+        function saveData() {
+            localStorage.setItem(DB_KEY, JSON.stringify(window.appData));
         }
 
-        window.saveSchoolSettings = async function() {
-            const name = document.getElementById('setupSchoolName').value;
-            const year = document.getElementById('setupYear').value;
-            const email = document.getElementById('setupEmail').value.trim();
-            
-            if(!name || !email.includes('@')) return alert('البيانات غير صحيحة');
-            
-            showLoading();
-            try {
-                await setDoc(doc(db, "settings", "schoolConfig"), {
-                    schoolName: name,
-                    year: year,
-                    adminEmail: email
-                });
-                
-                window.appData.settings = { schoolName: name, year: year, adminEmail: email };
-                updateHeader();
+        // --- تسجيل الدخول ---
+        window.checkLogin = function() {
+            // الإيميل ثابت والزر يدخل مباشرة
+            const loginScreen = document.getElementById('screen-login');
+            gsap.to(loginScreen, {opacity: 0, duration: 0.5, onComplete: () => {
+                loginScreen.style.display = 'none';
+                document.getElementById('mainAppContainer').style.display = 'block';
                 document.getElementById('mainNav').style.display = 'flex';
-                showScreen('screen-main');
-            } catch (e) {
-                alert("خطأ في الحفظ: " + e.message);
-            }
-            hideLoading();
+                initApp();
+            }});
         };
 
-        window.addNewClass = async function() {
+        function initApp() {
+            updateHeader();
+            renderClasses();
+            showScreen('screen-main');
+        }
+
+        // --- العمليات ---
+
+        window.saveSchoolSettings = function() {
+            const name = document.getElementById('setupSchoolName').value;
+            const year = document.getElementById('setupYear').value;
+            
+            if(!name) return alert('يرجى كتابة اسم المدرسة');
+            
+            window.appData.settings = { schoolName: name, year: year };
+            saveData();
+            
+            updateHeader();
+            document.getElementById('mainNav').style.display = 'flex';
+            showScreen('screen-main');
+        };
+
+        window.addNewClass = function() {
             const name = document.getElementById('newClassInput').value;
             if(!name) return;
             
-            showLoading();
-            try {
-                const newClassRef = doc(collection(db, "classes"));
-                const classData = { name: name, section: '', students: [] };
-                
-                await setDoc(newClassRef, classData);
-                
-                window.appData.classes.push({ id: newClassRef.id, ...classData });
-                renderClasses();
-                document.getElementById('newClassInput').value = '';
-            } catch (e) {
-                alert("فشل إضافة الصف");
-            }
-            hideLoading();
+            // إنشاء صف جديد
+            const newClass = { 
+                id: Date.now(), 
+                name: name, 
+                section: '', 
+                students: [] 
+            };
+            
+            window.appData.classes.push(newClass);
+            saveData();
+            renderClasses();
+            document.getElementById('newClassInput').value = '';
         };
 
-        window.deleteClass = async function(idx) {
+        window.deleteClass = function(idx) {
             if(!confirm('حذف الصف نهائياً؟')) return;
             
-            const cls = window.appData.classes[idx];
-            showLoading();
-            try {
-                await deleteDoc(doc(db, "classes", cls.id));
-                window.appData.classes.splice(idx, 1);
-                renderClasses();
-            } catch (e) {
-                alert("خطأ في الحذف");
-            }
-            hideLoading();
+            window.appData.classes.splice(idx, 1);
+            saveData();
+            renderClasses();
         };
 
-        // دالة إضافة حقل المرشد في شاشة الإضافة
         window.addCounselorField = function() {
             const val = document.getElementById('tempCounselorInput').value;
             if(!val) return;
@@ -376,7 +314,7 @@
             document.getElementById('tempCounselorInput').value = '';
         };
 
-        window.addNewStudent = async function() {
+        window.addNewStudent = function() {
             const name = document.getElementById('studentName').value; 
             const pass = document.getElementById('studentPass').value;
             const abs = document.getElementById('studentAbsence').value || 0; 
@@ -384,9 +322,8 @@
             const section = document.getElementById('detailSectionName').value;
             
             if(!name || !pass) return alert('البيانات ناقصة');
-            if(isPasswordTaken(pass)) return alert('كلمة المرور مستخدمة');
+            if(isPasswordTaken(pass)) return alert('كلمة المرور مستخدمة لطالب آخر');
 
-            // تجميع الدرجات
             let grades = [];
             const gradeDivs = document.getElementById('dynamicGradesContainer').children;
             for(let div of gradeDivs) {
@@ -397,7 +334,6 @@
                 if(sub) grades.push({ sub, month: month || "عام", val: val || "", note: note || "" });
             }
 
-            // تجميع بيانات المرشد التربوي
             let counselorNotes = [];
             const cDivs = document.getElementById('counselorContainer').children;
             for(let div of cDivs) {
@@ -410,29 +346,16 @@
                 name, password: pass, absences: abs, behavior: beh, grades, counselorNotes
             };
 
-            const clsId = window.currentClassId;
-            const clsIdx = window.appData.classes.findIndex(c => c.id === clsId);
+            const clsIdx = window.appData.classes.findIndex(c => c.id === window.currentClassId);
             
-            showLoading();
-            try {
-                const clsRef = doc(db, "classes", clsId);
-                await updateDoc(clsRef, {
-                    section: section,
-                    students: arrayUnion(newStudent)
-                });
+            window.appData.classes[clsIdx].section = section;
+            window.appData.classes[clsIdx].students.push(newStudent);
+            saveData();
 
-                window.appData.classes[clsIdx].section = section;
-                window.appData.classes[clsIdx].students.push(newStudent);
-                openClassDetails(clsIdx);
-                // تصفير حقول المرشد
-                document.getElementById('counselorContainer').innerHTML = '';
-            } catch (e) {
-                alert("فشل الحفظ: " + e.message);
-            }
-            hideLoading();
+            openClassDetails(clsIdx);
+            document.getElementById('counselorContainer').innerHTML = '';
         };
 
-        // دالة إضافة حقل المرشد في شاشة التعديل (بروفايل)
         window.addCounselorToProfile = function() {
             const val = document.getElementById('profileCounselorInput').value;
             if(val) {
@@ -448,7 +371,7 @@
             container.appendChild(div);
         }
 
-        window.saveModifiedStudent = async function() {
+        window.saveModifiedStudent = function() {
             const clsIdx = window.appData.classes.findIndex(c => c.id === window.currentClassId);
             const oldStudentData = window.appData.classes[clsIdx].students[window.currentStudentIdx];
             
@@ -464,7 +387,6 @@
                 counselorNotes: []
             };
 
-            // تجميع الدرجات
             document.getElementById('profileGradesContainer').querySelectorAll('.grade-row-container').forEach((row) => {
                 updatedStudent.grades.push({ 
                     sub: row.querySelector('.edit-sub').value, 
@@ -474,73 +396,38 @@
                 });
             });
 
-            // تجميع المرشد
             document.getElementById('profileCounselorContainer').querySelectorAll('.edit-c-val').forEach(input => {
                 if(input.value) updatedStudent.counselorNotes.push(input.value);
             });
 
-            showLoading();
-            try {
-                const clsRef = doc(db, "classes", window.currentClassId);
-                const clsSnap = await getDoc(clsRef);
-                const clsData = clsSnap.data();
-                
-                const stdIndex = clsData.students.findIndex(s => s.id === oldStudentData.id);
-                if(stdIndex > -1) {
-                    clsData.students[stdIndex] = updatedStudent;
-                    await updateDoc(clsRef, { students: clsData.students });
-                    
-                    window.appData.classes[clsIdx].students[window.currentStudentIdx] = updatedStudent;
-                    alert('تم الحفظ بنجاح');
-                }
-            } catch (e) {
-                alert("فشل التعديل: " + e.message);
-            }
-            hideLoading();
+            window.appData.classes[clsIdx].students[window.currentStudentIdx] = updatedStudent;
+            saveData();
+            alert('تم الحفظ بنجاح');
         };
 
-        window.deleteStudent = async function() {
+        window.deleteStudent = function() {
             if(!confirm('حذف السجل؟')) return;
             
             const clsIdx = window.appData.classes.findIndex(c => c.id === window.currentClassId);
-            const studentToDelete = window.appData.classes[clsIdx].students[window.currentStudentIdx];
+            window.appData.classes[clsIdx].students.splice(window.currentStudentIdx, 1);
+            saveData();
             
-            showLoading();
-            try {
-                const clsRef = doc(db, "classes", window.currentClassId);
-                await updateDoc(clsRef, {
-                    students: arrayRemove(studentToDelete)
-                });
-                
-                window.appData.classes[clsIdx].students.splice(window.currentStudentIdx, 1);
-                showScreen('screen-details');
-                renderStudentsList();
-            } catch(e) {
-                alert("فشل الحذف");
-            }
-            hideLoading();
+            showScreen('screen-details');
+            renderStudentsList();
         };
 
-        window.resetApp = async function() { 
-            if(confirm('تحذير: سيتم حذف قاعدة البيانات بالكامل!\nهل أنت متأكد؟')) { 
+        window.resetApp = function() { 
+            if(confirm('تحذير: سيتم حذف جميع البيانات من المتصفح!\nهل أنت متأكد؟')) { 
                 const code = prompt("أدخل رمز الحماية (1001):");
                 if(code === "1001") {
-                    showLoading();
-                    try {
-                        await deleteDoc(doc(db, "settings", "schoolConfig"));
-                        const clsSnap = await getDocs(collection(db, "classes"));
-                        const deletePromises = [];
-                        clsSnap.forEach((d) => { deletePromises.push(deleteDoc(d.ref)); });
-                        await Promise.all(deletePromises);
-                        
-                        alert("تم فرمتة النظام.");
-                        location.reload();
-                    } catch(e) {
-                        alert("خطأ أثناء الفرمتة");
-                    }
+                    localStorage.removeItem(DB_KEY);
+                    alert("تم فرمتة النظام.");
+                    location.reload();
                 }
             } 
         };
+
+        // --- دوال العرض والمساعدة ---
 
         window.renderClasses = function() {
             const c = document.getElementById('classesContainer'); c.innerHTML = '';
@@ -563,7 +450,7 @@
             document.getElementById('studentAbsence').value = ''; 
             document.getElementById('studentBehavior').value = '';
             document.getElementById('dynamicGradesContainer').innerHTML = '';
-            document.getElementById('counselorContainer').innerHTML = ''; // تصفير المرشد
+            document.getElementById('counselorContainer').innerHTML = ''; 
             renderStudentsList(); showScreen('screen-details');
         };
 
@@ -595,11 +482,9 @@
             document.getElementById('profileSubjectInput').value = '';
             document.getElementById('profileCounselorInput').value = '';
             
-            // تعبئة الدرجات
             const container = document.getElementById('profileGradesContainer'); container.innerHTML = '';
             std.grades.forEach((g) => { addGradeRowToProfile(g.sub, g.month, g.val, g.note); });
 
-            // تعبئة المرشد
             const cContainer = document.getElementById('profileCounselorContainer'); cContainer.innerHTML = '';
             if(std.counselorNotes && std.counselorNotes.length > 0) {
                 std.counselorNotes.forEach(txt => createCounselorRowProfile(txt));
@@ -649,7 +534,6 @@
                             document.getElementById('previewAbsence').innerText = std.absences || 0;
                             document.getElementById('previewBehavior').innerText = std.behavior || "لا يوجد";
                             
-                            // تعبئة الجدول
                             const tableBody = document.getElementById('previewGradesTableBody');
                             tableBody.innerHTML = '';
                             
@@ -658,17 +542,11 @@
                             } else {
                                 std.grades.forEach(g => {
                                     const tr = document.createElement('tr');
-                                    tr.innerHTML = `
-                                        <td><strong>${g.sub}</strong></td>
-                                        <td>${g.month || '-'}</td>
-                                        <td style="font-weight:bold; color:var(--primary);">${g.val || '-'}</td>
-                                        <td style="font-size:0.8rem; color:#666;">${g.note || '-'}</td>
-                                    `;
+                                    tr.innerHTML = `<td><strong>${g.sub}</strong></td><td>${g.month || '-'}</td><td style="font-weight:bold; color:var(--primary);">${g.val || '-'}</td><td style="font-size:0.8rem; color:#666;">${g.note || '-'}</td>`;
                                     tableBody.appendChild(tr);
                                 });
                             }
 
-                            // تعبئة المرشد التربوي
                             const counselorDiv = document.getElementById('previewCounselorList');
                             counselorDiv.innerHTML = '';
                             if(std.counselorNotes && std.counselorNotes.length > 0) {
@@ -679,7 +557,7 @@
                                     counselorDiv.appendChild(cItem);
                                 });
                             } else {
-                                counselorDiv.innerHTML = '<p style="text-align:center; color:#ccc; font-size:0.8rem;">لا توجد ملاحظات من المرشد.</p>';
+                                counselorDiv.innerHTML = '<p style="text-align:center; color:#ccc; font-size:0.8rem;">لا توجد ملاحظات.</p>';
                             }
 
                             showScreen('screen-preview');
@@ -703,7 +581,6 @@
         };
 
         window.navTo = function(screenId) {
-            if(!window.appData.settings) return;
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(screenId === 'screen-main') document.querySelectorAll('.nav-item')[0].classList.add('active');
             if(screenId === 'screen-search') document.querySelectorAll('.nav-item')[1].classList.add('active');
@@ -718,10 +595,11 @@
         
         window.updateHeader = function() { 
             if(!window.appData.settings) return;
-            const emailPart = `<div style="font-size:0.8rem; opacity:0.8; margin-top:5px; background:rgba(0,0,0,0.1); display:inline-block; padding:2px 10px; border-radius:10px;">${window.appData.settings.adminEmail}</div>`;
+            const emailPart = `<div style="font-size:0.8rem; opacity:0.8; margin-top:5px; background:rgba(0,0,0,0.1); display:inline-block; padding:2px 10px; border-radius:10px;">admin@gmail.com</div>`;
             document.getElementById('schoolHeader').innerHTML = `<h1 style="margin:0; font-size:1.4rem;">${window.appData.settings.schoolName}</h1><p>${window.appData.settings.year}</p>${emailPart}`; 
         }
 
     </script>
 </body>
 </html>
+
