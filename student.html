@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <meta name="theme-color" content="#6366f1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="بوابة الطالب">
-    
     <title>بوابة الطالب الإلكترونية</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
@@ -20,7 +17,7 @@
             --secondary: #ec4899;
             --glass: rgba(255, 255, 255, 0.95);
             --text: #1e293b;
-            --radius: 16px;
+            --radius: 20px;
         }
 
         * {
@@ -40,6 +37,7 @@
             min-height: 100vh;
             color: var(--text);
             overflow-x: hidden;
+            padding-bottom: 80px;
         }
 
         @keyframes gradientBG {
@@ -49,7 +47,7 @@
         }
 
         /* شاشة الدخول */
-        #login-screen {
+        #login-screen, #confirm-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -60,6 +58,7 @@
             align-items: center;
             z-index: 1000;
             padding: 20px;
+            background: inherit;
         }
 
         .login-card {
@@ -70,6 +69,7 @@
             max-width: 350px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
         }
 
         /* الشاشة الرئيسية */
@@ -86,329 +86,426 @@
             padding: 20px;
             border-radius: var(--radius);
             margin-bottom: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .header-info {
             text-align: center;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         input {
             width: 100%;
-            padding: 14px;
-            border: 2px solid #cbd5e1;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 1rem;
             text-align: center;
             margin-bottom: 15px;
             font-weight: bold;
+            letter-spacing: 0px;
+            transition: 0.3s;
         }
-        input:focus { border-color: var(--primary); }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
+        input::placeholder { color: #94a3b8; font-size: 0.9rem; }
 
         .btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: transform 0.2s;
         }
         .btn:active { transform: scale(0.96); }
+        .btn-green { background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        .btn-red { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
 
         /* تفاصيل الطالب */
-        .student-profile {
-            text-align: center;
-            margin-bottom: 20px;
-        }
         .profile-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--primary);
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 10px;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            font-size: 2.5rem;
+            margin: -50px auto 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 4px solid white;
         }
 
-        /* مربعات الإحصائيات */
-        .stats-grid {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        .stats-grid { display: flex; gap: 10px; margin-bottom: 20px; }
         .stat-box {
             flex: 1;
-            background: #f1f5f9;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-        }
-        .stat-label { font-size: 0.85rem; color: #64748b; margin-bottom: 5px; }
-        .stat-value { font-size: 1.4rem; font-weight: 800; }
-
-        /* قائمة الدرجات */
-        .grade-item {
             background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
             padding: 15px;
-            margin-bottom: 12px;
-            border-right: 5px solid var(--secondary);
-            position: relative;
-            overflow: hidden;
-        }
-        .grade-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .subject-name { font-weight: 800; font-size: 1.1rem; color: #334155; }
-        .month-badge { 
-            background: #e0e7ff; 
-            color: var(--primary); 
-            padding: 4px 10px; 
-            border-radius: 20px; 
-            font-size: 0.8rem; 
-            font-weight: bold;
-        }
-        .grade-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text);
-        }
-        .grade-note {
-            background: #fffbeb;
-            border: 1px dashed #fcd34d;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #b45309;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* تحذير الغياب */
-        .alert-box {
-            background-color: #fef2f2;
-            color: #ef4444;
-            padding: 15px;
-            border-radius: 12px;
-            border: 2px solid #ef4444;
-            margin-top: 25px;
+            border-radius: 15px;
             text-align: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+        .stat-value { font-size: 1.5rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.8rem; color: #64748b; }
 
-        /* زر الواتساب الصغير */
-        .whatsapp-float {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background-color: #25d366;
-            color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+        /* تبويبات الأشهر */
+        .months-scroll-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-            z-index: 9999;
-            text-decoration: none;
-            font-size: 1.3rem;
-            padding: 0;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .months-scroll-container::-webkit-scrollbar { display: none; }
+        
+        .month-tab {
+            background: white;
+            color: #64748b;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: 0.3s;
+        }
+        .month-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
         }
 
-        .logout-btn {
-            background: #ef4444;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        .grades-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .grades-table th { text-align: right; color: #64748b; padding: 10px; font-size: 0.9rem; }
+        .grades-table td { padding: 15px 10px; border-bottom: 1px solid #f1f5f9; font-weight: bold; }
+        .grades-table tr:last-child td { border-bottom: none; }
+        
+        .grade-badge {
+            background: #f0f9ff;
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 1.1rem;
         }
+        
+        .note-tooltip {
+            color: #f59e0b;
+            font-size: 1.2rem;
+            cursor: help;
+        }
+
+        .counselor-section {
+            background: #fff1f2;
+            border-right: 4px solid #f43f5e;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .counselor-note {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            color: #881337;
+            font-size: 0.95rem;
+        }
+
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 20000; display: flex; justify-content: center; align-items: center; color: white; flex-direction: column; display: none; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <a href="https://wa.me/9647812534439" target="_blank" class="whatsapp-float">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>جاري التحقق...</p>
+    </div>
 
     <div id="login-screen">
         <div class="login-card">
             <div style="font-size: 3.5rem; color: var(--primary); margin-bottom: 10px;">
                 <i class="fas fa-user-graduate"></i>
             </div>
-            <h2 style="color: #333; margin-bottom: 5px;">بوابة الطالب</h2>
-            <p style="color: #64748b; margin-bottom: 25px;">لمتابعة الدرجات والتقييمات</p>
+            <h2 style="color: #333; margin-bottom: 5px;">مرحباً بك</h2>
+            <p style="color: #64748b; margin-bottom: 25px;">بوابة نتائج الطلاب</p>
             
-            <input type="text" id="passwordInput" placeholder="أدخل رمز الطالب (كلمة المرور)">
-            <button class="btn" onclick="login()">عرض النتيجة</button>
-            <p id="errorMsg" style="color: red; margin-top: 10px; display: none; font-size: 0.9rem;">رمز الطالب غير صحيح!</p>
+            <input type="tel" id="passwordInput" placeholder="كلمة المرور الطالب 1234">
+            <button class="btn" onclick="checkCode()">دخول</button>
+        </div>
+    </div>
+
+    <div id="confirm-screen" style="display: none;">
+        <div class="login-card">
+            <h3 style="color:#64748b; margin-bottom:10px;">هل أنت الطالب:</h3>
+            <h2 id="confirmName" style="color:var(--primary); margin-bottom:20px; font-size:1.5rem;">...</h2>
+            
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-green" onclick="confirmLogin(true)">نعم، أنا هو</button>
+                <button class="btn btn-red" onclick="confirmLogin(false)">لا، خروج</button>
+            </div>
         </div>
     </div>
 
     <div id="dashboard-screen">
-        <div class="header-info" id="schoolInfo">
-            <h1>اسم المدرسة</h1>
-            <p>2024 - 2025</p>
+        
+        <div class="header-info" id="schoolHeader">
+            <h1>مدرسة المستقبل الأهلية</h1>
+            <p>العام الدراسي 2025 - 2026</p>
         </div>
 
-        <div class="card-panel student-profile">
-            <div class="profile-icon">
-                <i class="fas fa-user"></i>
-            </div>
-            <h2 id="stName" style="color: var(--text); margin-bottom: 5px;">اسم الطالب</h2>
-            <p id="stClass" style="color: #64748b; font-weight: bold;">الصف - الشعبة</p>
+        <div class="card-panel" style="margin-top: 40px; text-align: center; position: relative;">
+            <div class="profile-icon"><i class="fas fa-user"></i></div>
+            <h2 id="stName" style="color: var(--text); margin-bottom: 5px;">...</h2>
+            <p id="stClass" style="color: #64748b; font-weight: bold;">...</p>
         </div>
 
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="stat-label">عدد الغيابات</div>
-                <div class="stat-value" id="stAbsence" style="color: var(--primary);">0</div>
+                <span class="stat-value" id="stAbsence" style="color: var(--primary);">0</span>
+                <span class="stat-label">أيام الغياب</span>
             </div>
             <div class="stat-box">
-                <div class="stat-label">تقييم السلوك</div>
-                <div class="stat-value" id="stBehavior" style="color: var(--secondary);">جيد</div>
+                <span class="stat-value" id="stBehavior" style="color: var(--secondary);">...</span>
+                <span class="stat-label">السلوك</span>
+            </div>
+        </div>
+
+        <div id="counselorSection" style="display:none;">
+            <div class="counselor-section">
+                <h3 style="margin-bottom:10px; color:#be123c; font-size:1rem;"><i class="fas fa-user-tie"></i> ملاحظات المرشد التربوي</h3>
+                <div id="counselorList"></div>
             </div>
         </div>
 
         <div class="card-panel">
             <h3 style="text-align: right; margin-bottom: 15px; color: var(--text); border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                <i class="fas fa-file-alt" style="color: var(--primary); margin-left: 5px;"></i> سجل الدرجات
+                <i class="fas fa-chart-bar" style="color: var(--primary); margin-left: 5px;"></i> كشف الدرجات
             </h3>
             
-            <div id="gradesContainer">
-                </div>
+            <div class="months-scroll-container" id="monthsTabs"></div>
 
-            <div class="alert-box">
-                <i class="fas fa-exclamation-triangle"></i><br>
-                الحد المسموح للغيابات ٢٥ <br> الرجاء الالتزام بالدوام تجنبا للفصل
+            <div id="gradesTableContainer">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>المادة</th>
+                            <th style="text-align:center;">الدرجة</th>
+                            <th style="text-align:left;">ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradesTableBody"></tbody>
+                </table>
+                <p id="noGradesMsg" style="text-align:center; color:#94a3b8; padding:20px; display:none;">اختر شهراً لعرض الدرجات</p>
             </div>
         </div>
 
-        <button class="btn logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
-        <div style="height: 50px;"></div>
+        <button class="btn btn-red" onclick="location.reload()" style="margin-top:20px;"><i class="fas fa-sign-out-alt"></i> خروج آمن</button>
     </div>
 
     <script>
-        // قراءة البيانات من الذاكرة المحلية (نفس البيانات التي حفظها تطبيق المدير)
-        function getData() {
-            const classes = JSON.parse(localStorage.getItem('schoolClasses_v8') || '[]');
-            const settings = JSON.parse(localStorage.getItem('schoolSettings_v8'));
-            return { classes, settings };
-        }
-
-        function login() {
-            const pass = document.getElementById('passwordInput').value.trim();
-            const errorMsg = document.getElementById('errorMsg');
-            const data = getData();
-
-            if (!pass) return;
-
-            // البحث عن الطالب في جميع الصفوف
-            let foundStudent = null;
-            let foundClass = null;
-
-            if (data.classes) {
-                for (let c of data.classes) {
-                    for (let s of c.students) {
-                        if (s.password === pass) {
-                            foundStudent = s;
-                            foundClass = c;
-                            break;
-                        }
+        // --- تهيئة البيانات المحلية (Local Storage) ---
+        // يتم تنفيذ هذا الكود عند تحميل الصفحة لضمان وجود بيانات
+        (function initLocalData() {
+            // بيانات الطالب التجريبي
+            const sampleData = {
+                students: [
+                    {
+                        name: "أحمد علي حسين",
+                        password: "1234",
+                        classInfo: "الخامس العلمي - أ",
+                        absences: 2,
+                        behavior: "متميز",
+                        counselorNotes: ["طالب مجتهد، نرجو الاستمرار", "يحتاج لمراجعة بسيطة في الفيزياء"],
+                        grades: [
+                            // الشهر الأول
+                            { month: "الشهر الأول", sub: "التربية الإسلامية", val: 98, note: "ممتاز" },
+                            { month: "الشهر الأول", sub: "اللغة العربية", val: 88, note: "" },
+                            { month: "الشهر الأول", sub: "اللغة الإنجليزية", val: 92, note: "" },
+                            { month: "الشهر الأول", sub: "الرياضيات", val: 65, note: "تحتاج تركيز" },
+                            { month: "الشهر الأول", sub: "الفيزياء", val: 74, note: "" },
+                            { month: "الشهر الأول", sub: "الكيمياء", val: 81, note: "" },
+                            // الشهر الثاني
+                            { month: "الشهر الثاني", sub: "التربية الإسلامية", val: 100, note: "" },
+                            { month: "الشهر الثاني", sub: "اللغة العربية", val: 90, note: "" },
+                            { month: "الشهر الثاني", sub: "اللغة الإنجليزية", val: 95, note: "تحسن ملحوظ" },
+                            { month: "الشهر الثاني", sub: "الرياضيات", val: 78, note: "أفضل من السابق" },
+                            { month: "الشهر الثاني", sub: "الفيزياء", val: 82, note: "" },
+                            { month: "الشهر الثاني", sub: "الكيمياء", val: 85, note: "" }
+                        ]
                     }
-                    if (foundStudent) break;
-                }
-            }
-
-            if (foundStudent) {
-                // تسجيل دخول ناجح
-                errorMsg.style.display = 'none';
-                displayStudentData(foundStudent, foundClass, data.settings);
-                
-                // تأثير حركي للانتقال
-                const loginScreen = document.getElementById('login-screen');
-                gsap.to(loginScreen, {opacity: 0, duration: 0.5, onComplete: () => {
-                    loginScreen.style.display = 'none';
-                    document.getElementById('dashboard-screen').style.display = 'block';
-                    gsap.from("#dashboard-screen", {opacity: 0, y: 20, duration: 0.5});
-                }});
-            } else {
-                // فشل الدخول
-                errorMsg.style.display = 'block';
-                gsap.fromTo("#passwordInput", {x:-10}, {x:10, duration:0.1, repeat:3, yoyo:true});
-            }
-        }
-
-        function displayStudentData(student, classInfo, settings) {
-            // 1. عرض معلومات المدرسة
-            if (settings) {
-                document.getElementById('schoolInfo').innerHTML = `
-                    <h1 style="margin:0; font-size:1.5rem;">${settings.schoolName}</h1>
-                    <p>${settings.year}</p>
-                `;
-            }
-
-            // 2. عرض البيانات الشخصية
-            document.getElementById('stName').innerText = student.name;
-            document.getElementById('stClass').innerText = `${classInfo.name} - ${classInfo.section}`;
+                ]
+            };
             
-            // 3. عرض الإحصائيات
-            document.getElementById('stAbsence').innerText = student.absences || 0;
-            document.getElementById('stBehavior').innerText = student.behavior || "لا يوجد";
+            // حفظ البيانات في المتصفح
+            localStorage.setItem('school_db', JSON.stringify(sampleData));
+        })();
 
-            // 4. عرض الدرجات
-            const container = document.getElementById('gradesContainer');
-            container.innerHTML = '';
+        // --- المتغيرات العامة ---
+        let tempStudentData = null;
+        let groupedGrades = {};
 
-            if (!student.grades || student.grades.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px;">لا توجد مواد مسجلة حتى الآن.</p>';
-            } else {
-                student.grades.forEach(g => {
-                    const div = document.createElement('div');
-                    div.className = 'grade-item';
+        // --- دالة التحقق من الرمز ---
+        function checkCode() {
+            const code = document.getElementById('passwordInput').value.trim();
+            if(!code) return alert("الرجاء كتابة الرمز");
+
+            document.getElementById('loading-overlay').style.display = 'flex';
+
+            // محاكاة تأخير بسيط للتحميل
+            setTimeout(() => {
+                // جلب البيانات من LocalStorage
+                const db = JSON.parse(localStorage.getItem('school_db'));
+                const student = db.students.find(s => s.password === code);
+
+                document.getElementById('loading-overlay').style.display = 'none';
+
+                if(student) {
+                    tempStudentData = student;
                     
-                    let noteHtml = '';
-                    if (g.note && g.note.trim() !== "") {
-                        noteHtml = `<div class="grade-note"><i class="fas fa-sticky-note"></i> ${g.note}</div>`;
-                    }
+                    // إخفاء شاشة الدخول وإظهار شاشة التأكيد
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('confirm-screen').style.display = 'flex';
+                    
+                    document.getElementById('confirmName').innerText = tempStudentData.name;
+                    gsap.from("#confirmName", {scale: 0.5, opacity: 0, duration: 0.4});
+                } else {
+                    alert("الرمز غير صحيح! (جرب 1234)");
+                    document.getElementById('passwordInput').value = '';
+                }
+            }, 800);
+        }
 
-                    div.innerHTML = `
-                        <div class="grade-header">
-                            <span class="subject-name">${g.sub}</span>
-                            <span class="month-badge">${g.month || '-'}</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="color:#64748b; font-size:0.9rem;">الدرجة النهائية:</span>
-                            <span class="grade-value">${g.val || '--'}</span>
-                        </div>
-                        ${noteHtml}
-                    `;
-                    container.appendChild(div);
-                });
+        // --- دالة تأكيد الدخول ---
+        function confirmLogin(isConfirmed) {
+            if(isConfirmed) {
+                document.getElementById('confirm-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'block';
+                renderDashboard();
+            } else {
+                tempStudentData = null;
+                document.getElementById('confirm-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('passwordInput').value = '';
             }
         }
 
-        function logout() {
-            location.reload();
+        // --- دالة عرض لوحة التحكم ---
+        function renderDashboard() {
+            // تعبئة البيانات الأساسية
+            document.getElementById('stName').innerText = tempStudentData.name;
+            document.getElementById('stClass').innerText = tempStudentData.classInfo;
+            document.getElementById('stAbsence').innerText = tempStudentData.absences;
+            document.getElementById('stBehavior').innerText = tempStudentData.behavior;
+
+            // عرض ملاحظات المرشد
+            const cList = document.getElementById('counselorList');
+            const cSec = document.getElementById('counselorSection');
+            cList.innerHTML = '';
+            
+            if(tempStudentData.counselorNotes && tempStudentData.counselorNotes.length > 0) {
+                cSec.style.display = 'block';
+                tempStudentData.counselorNotes.forEach(note => {
+                    const div = document.createElement('div');
+                    div.className = 'counselor-note';
+                    div.innerHTML = `<i class="fas fa-quote-right"></i> <span>${note}</span>`;
+                    cList.appendChild(div);
+                });
+            } else {
+                cSec.style.display = 'none';
+            }
+
+            // معالجة الدرجات
+            processGrades(tempStudentData.grades);
+        }
+
+        // --- معالجة وتجميع الدرجات حسب الشهر ---
+        function processGrades(grades) {
+            groupedGrades = {};
+            const tabsContainer = document.getElementById('monthsTabs');
+            tabsContainer.innerHTML = '';
+
+            if(!grades || grades.length === 0) {
+                document.getElementById('noGradesMsg').style.display = 'block';
+                document.querySelector('.grades-table').style.display = 'none';
+                return;
+            }
+
+            // تجميع الدرجات
+            grades.forEach(g => {
+                const month = g.month || "عام";
+                if(!groupedGrades[month]) groupedGrades[month] = [];
+                groupedGrades[month].push(g);
+            });
+
+            // إنشاء أزرار الأشهر
+            const months = Object.keys(groupedGrades);
+            months.forEach((m, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'month-tab';
+                if(index === 0) btn.classList.add('active');
+                btn.innerText = m;
+                btn.onclick = () => switchMonth(m, btn);
+                tabsContainer.appendChild(btn);
+            });
+
+            // عرض أول شهر تلقائياً
+            if(months.length > 0) {
+                renderTableForMonth(months[0]);
+                document.querySelector('.grades-table').style.display = 'table';
+            }
+        }
+
+        // --- التبديل بين الأشهر ---
+        function switchMonth(monthName, clickedBtn) {
+            document.querySelectorAll('.month-tab').forEach(b => b.classList.remove('active'));
+            clickedBtn.classList.add('active');
+            renderTableForMonth(monthName);
+        }
+
+        // --- عرض جدول الدرجات لشهر محدد ---
+        function renderTableForMonth(monthName) {
+            const tbody = document.getElementById('gradesTableBody');
+            tbody.innerHTML = '';
+            
+            const monthGrades = groupedGrades[monthName] || [];
+            
+            // تأثير حركي بسيط
+            gsap.fromTo(tbody, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.3});
+
+            monthGrades.forEach(g => {
+                const tr = document.createElement('tr');
+                // تلوين الدرجة حسب المستوى
+                let badgeColor = '#f0f9ff'; // أزرق فاتح (افتراضي)
+                let textColor = 'var(--primary)';
+                
+                if(g.val < 50) { badgeColor = '#fef2f2'; textColor = '#ef4444'; } // راسب - أحمر
+                else if(g.val >= 90) { badgeColor = '#ecfdf5'; textColor = '#10b981'; } // ممتاز - أخضر
+
+                const noteIcon = g.note ? `<i class="fas fa-info-circle note-tooltip" title="${g.note}" onclick="alert('${g.note}')"></i>` : '';
+                
+                tr.innerHTML = `
+                    <td>${g.sub}</td>
+                    <td style="text-align:center;">
+                        <span class="grade-badge" style="background:${badgeColor}; color:${textColor}">${g.val}</span>
+                    </td>
+                    <td style="text-align:left;">${noteIcon} <span style="font-size:0.8rem; color:#64748b;">${g.note || ''}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
     </script>
 </body>
 </html>
+
